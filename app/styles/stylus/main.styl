@@ -1,0 +1,120 @@
+linear_gradient(origin, colors...)
+
+    fallback = colors[1][0]
+
+    colors = join(', ', colors)
+    colors = unquote(colors)
+
+    background-color fallback
+    background linear-gradient(origin, colors)
+
+@font-face
+    font-family "Carnivalee Freakshow"
+    src url("fonts/Carnevalee_Freakshow.eot?") format("eot"), url("fonts/Carnevalee_Freakshow.woff") format("woff"), url("fonts/Carnevalee_Freakshow.ttf") format("truetype"), url("fonts/Carnevalee_Freakshow.svg#CarnivaleeFreakshow") format("svg")
+    font-weight bold
+    font-style normal
+
+body
+    font-family "Times New Roman"
+
+h1, h2, h3, h4
+    font-family "Carnivalee Freakshow"
+    text-shadow 5px 5px 5px rgba(0, 0, 0, .5)
+    margin 0 0 1em 0
+
+h1
+    color #eb9316
+    font-size 85px
+
+h4
+    color #eb9316
+    font-size 25px
+
+.poker-table
+    color #FFF
+    background-color #114411
+
+.wrapper
+    min-width 400px
+    max-width 700px
+    margin 0 auto
+
+.container
+    background-color rgba(255,255,255, 0.2)
+    border-radius 15px
+    padding 15px
+    margin-bottom 10px;
+
+.btn
+    display block
+    margin 10px auto
+    font-family "Carnivalee Freakshow"
+    color #eb9316
+    font-size 20px
+    background-color #319418
+    background linear-gradient(to bottom, #319418, #1c470b)
+    padding 10px 20px
+    border 1px solid #1f7d17
+    border-radius 10px
+    box-shadow 0px 1px 3px rgba(000,000,000,0.7), inset 0px 0px 1px rgba(255,255,255,1)
+    text-shadow 0px -1px 0px rgba(000,000,000,0.4), 0px 1px 0px rgba(255,255,255,0.3)
+
+label
+    font-size 20px
+
+input, textarea
+    display block
+    margin 10px auto
+    background-color #fff
+    color #4d4d4d
+    border 1px solid #c4c4c4
+    font-size 25px
+    padding 8px 12px
+    border-radius 5px
+    box-shadow 2px 2px 2px rgba(255,255,255,.3), inset 2px 2px 5px #e2e2e2
+
+textarea
+    width 425px
+    overflow auto
+
+#select-players
+    color #eb9316
+    width 300px
+    margin 0 auto
+    text-align center
+
+.list-hand
+    list-style none
+    overflow hidden
+    padding 0
+    margin 0
+
+    li
+        float left
+        margin 5px
+
+.player-caption
+    float left
+    width 30%
+
+.player-hand
+    float left
+    width 70%
+
+.public-hand
+    margin-bottom 10px;
+
+.card
+    height 80px
+    width 60px
+    background url('../images/cards.gif') #FFF
+    border-radius 5px
+    box-shadow 1px 1px 1px rgba(0, 0, 0, .5)
+    border 1px solid #000
+
+suitList = 1 2 4 8
+
+for x in 0..12
+    for suit, y in suitList
+        #card-{x+1}-{suit}
+            background-position x*-60px y*-80px

@@ -1,0 +1,62 @@
+<!doctype html>
+
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <!-- build:css styles/vendor.css -->
+        <!-- bower:css -->
+        <!-- endbower -->
+        <!-- endbuild -->
+        <!-- build:css({.tmp,app}) styles/main.css -->
+        <link rel="stylesheet" href="styles/main.css">
+        <!-- endbuild -->
+    </head>
+    <body class="poker-table">
+        <!--[if lt IE 10]>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please
+            <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div class="wrapper">
+            <div class="row" ng-controller="GameController">
+                <h1>Texas Hold'em Poker</h1>
+
+                <div id="select-players" class="container" ng-show="!players.length">
+                    <form id="number-of-players" ng-submit="startGame()">
+                        <label for="number-of-players">Enter amount of players (between 2 and 6)</label>
+                        <input type="number" id="number-of-players" ng-model="numberOfPlayers" value="2" min="2" max="6" class="input-lg"/>
+                        <input type="submit" id="start-game" value="Start Game" class="btn btn-default"/>
+                    </form>
+                </div>
+
+                <div class="" ng-show="players.length">
+                    <div class="public-hand">
+                        <div class="public-title">
+                            <h4>Public Hand</h4>
+                        </div>
+
+                        <ul class="list-hand">
+                            <li class="card" ng-repeat="commonCard in common.hand" id="card-{{commonCard.r}}-{{commonCard.s}}"></li>
+                        </ul>
+                    </div>
+                    <div class="players">
+                        <div class="container" ng-repeat="player in players  | orderBy:'rank':true">
+                            <div class="player-caption">
+                                <h4>Player {{player.num}}</h4>
+                                <div class="player-rank">{{player.rankText}} ({{player.rank}})</div>
+                            </div>
+                            <ul class="list-hand">
+                                <li class="card" ng-repeat="playerCard in player.hand" id="card-{{playerCard.r}}-{{playerCard.s}}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="bower_components/requirejs/require.js" data-main="scripts/main.js"></script>
+    </body>
+</html>
