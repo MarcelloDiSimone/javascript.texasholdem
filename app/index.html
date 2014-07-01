@@ -44,10 +44,10 @@
                         </ul>
                     </div>
                     <div class="players">
-                        <div class="container" ng-repeat="player in players  | orderBy:'rank':true">
+                        <div class="container" ng-repeat="player in players  | orderBy:'rank.rank':true">
                             <div class="player-caption">
                                 <h4>Player {{player.num}}</h4>
-                                <div class="player-rank">{{player.rankText}} ({{player.rank}})</div>
+                                <div class="player-rank">{{player.rank.rankText}} <span ng-show="player.rank.aceLow">with Ace low</span> ({{player.rank.rank}})</div>
                             </div>
                             <ul class="list-hand">
                                 <li class="card" ng-repeat="playerCard in player.hand" id="card-{{playerCard.r}}-{{playerCard.s}}"></li>

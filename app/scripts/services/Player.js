@@ -16,9 +16,18 @@ define(['app'], function (app) {
         };
 
 
+        Player.prototype.getHand = function() {
+            return this.hand;
+        };
+
+
         Player.prototype.setRank = function(rank) {
-            this.rank = rank.rank;
-            this.rankText = rank.rankText;
+            this.rank = rank;
+        };
+
+
+        Player.prototype.getRank = function() {
+            return this.rank;
         };
 
         return Player;

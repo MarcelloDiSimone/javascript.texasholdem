@@ -13,11 +13,11 @@ define(['angular', 'angular-mocks', 'app', 'controllers/main', 'services/TexasHo
                     {r:14,s:1}
                 ],
                 'straightflush': [
-                    {r:10,s:1},
-                    {r:9,s:1},
-                    {r:8,s:1},
-                    {r:7,s:1},
-                    {r:6,s:1}
+                    {r:10,s:8},
+                    {r:9,s:8},
+                    {r:8,s:8},
+                    {r:7,s:8},
+                    {r:6,s:8}
                 ],
                 'fourofakind': [
                     {r:10,s:1},
@@ -27,18 +27,18 @@ define(['angular', 'angular-mocks', 'app', 'controllers/main', 'services/TexasHo
                     {r:8,s:2}
                 ],
                 'fullhouse': [
-                    {r:14,s:1},
-                    {r:14,s:2},
-                    {r:14,s:4},
+                    {r:12,s:1},
+                    {r:12,s:2},
+                    {r:12,s:4},
                     {r:11,s:1},
                     {r:11,s:2}
                 ],
                 'flush': [
-                    {r:14,s:1},
                     {r:12,s:1},
                     {r:10,s:1},
                     {r:8,s:1},
-                    {r:6,s:1}
+                    {r:6,s:1},
+                    {r:4,s:1}
                 ],
                 'straight': [
                     {r:10,s:2},
@@ -69,11 +69,22 @@ define(['angular', 'angular-mocks', 'app', 'controllers/main', 'services/TexasHo
                     {r:7,s:2}
                 ],
                 'highcard': [
+                    {r:12,s:1},
+                    {r:10,s:2},
+                    {r:8,s:4},
+                    {r:6,s:8},
+                    {r:4,s:2}
+                ]
+            },
+            rankHandsDeck = {
+                'deckRoyalFlush': [
+                    {r:10,s:1},
+                    {r:11,s:1},
+                    {r:12,s:1},
+                    {r:13,s:1},
                     {r:14,s:1},
-                    {r:12,s:2},
-                    {r:10,s:4},
-                    {r:9,s:8},
-                    {r:7,s:2}
+                    {r:8,s:2},
+                    {r:5,s:4}
                 ]
             },
             ranks = [
@@ -114,7 +125,7 @@ define(['angular', 'angular-mocks', 'app', 'controllers/main', 'services/TexasHo
 
         it('has set a SUIT_SIZE array', function() {
             expect(factory.SUIT_SIZE).toBeDefined();
-            expect(factory.SUIT_SIZE).toBe(12);
+            expect(factory.SUIT_SIZE).toBe(13);
         });
 
         it('has initialized a deck array', function() {
@@ -123,43 +134,47 @@ define(['angular', 'angular-mocks', 'app', 'controllers/main', 'services/TexasHo
         });
 
         it('can rank a "Royal Flush" correctly', function() {
-            expect(factory.rankHand(rankHands.royalflush)).toBe(7);
+            expect(factory.rankHand(rankHands.royalflush).rank).toBe(9);
         });
 
         it('can rank a "Straight Flush" correctly', function() {
-            expect(factory.rankHand(rankHands.straightflush)).toBe(1);
+            expect(factory.rankHand(rankHands.straightflush).rank).toBe(8);
         });
 
         it('can rank a "Four of a Kind" correctly', function() {
-            expect(factory.rankHand(rankHands.fourofakind)).toBe(0);
+            expect(factory.rankHand(rankHands.fourofakind).rank).toBe(7);
         });
 
         it('can rank a "Full House" correctly', function() {
-            expect(factory.rankHand(rankHands.fullhouse)).toBe(9);
+            expect(factory.rankHand(rankHands.fullhouse).rank).toBe(6);
         });
 
         it('can rank a "Flush" correctly', function() {
-            expect(factory.rankHand(rankHands.flush)).toBe(3);
+            expect(factory.rankHand(rankHands.flush).rank).toBe(5);
         });
 
         it('can rank a "Straight" correctly', function() {
-            expect(factory.rankHand(rankHands.straight)).toBe(2);
+            expect(factory.rankHand(rankHands.straight).rank).toBe(4);
         });
 
         it('can rank a "Three of a Kind" correctly', function() {
-            expect(factory.rankHand(rankHands.threeofakind)).toBe(8);
+            expect(factory.rankHand(rankHands.threeofakind).rank).toBe(3);
         });
 
         it('can rank a "Two Pairs" correctly', function() {
-            expect(factory.rankHand(rankHands.twopairs)).toBe(6);
+            expect(factory.rankHand(rankHands.twopairs).rank).toBe(2);
         });
 
         it('can rank a "One Pair" correctly', function() {
-            expect(factory.rankHand(rankHands.pair)).toBe(5);
+            expect(factory.rankHand(rankHands.pair).rank).toBe(1);
         });
 
         it('can rank a "High Cards" correctly', function() {
-            expect(factory.rankHand(rankHands.highcard)).toBe(4);
+            expect(factory.rankHand(rankHands.highcard).rank).toBe(0);
+        });
+
+        it('can rank a "Royal Flush" out of a deck of 7 cards correctly', function() {
+            expect(factory.rankDeck(rankHandsDeck.deckRoyalFlush).rank).toBe(9);
         });
     });
 });

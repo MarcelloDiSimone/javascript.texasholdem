@@ -1,6 +1,6 @@
 'use strict';
 
-define(['app', 'services/TexasHoldemGame', 'services/Player', 'filters/sortPlayers'], function (app) {
+define(['app', 'services/TexasHoldemGame', 'services/Player'], function (app) {
     return app.controller('GameController', ['$scope', 'TexasHoldemGame', 'Player',
         function GameController($scope, TexasHoldemGame, Player) {
             $scope.players = [];

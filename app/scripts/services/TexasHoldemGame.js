@@ -5,7 +5,7 @@ define(['app'], function (app) {
     app.factory('TexasHoldemGame', function () {
 
         function TexasHoldemGame() {
-            this.SUIT_SIZE = 12;
+            this.SUIT_SIZE = 13;
             /* The suit of a card is determined by a binary flag
              *      heart   = 1 = binary 0001
              *      diamond = 2 = binary 0010
@@ -66,10 +66,10 @@ define(['app'], function (app) {
             /* now we create an initial deck of cards from which we're able to deal random cards */
             this.deck = [];
 
-            for (var i = 0; i <= this.SUIT_SIZE; i++) {
+            for (var i = 2; i < this.SUIT_SIZE + 2; i++) {
                 for (var j = 0; j < this.SUITS.length; j++) {
                     this.deck.push({
-                        r: i + 2,
+                        r: i,
                         s: this.SUITS[j]
                     });
                 }
@@ -78,7 +78,7 @@ define(['app'], function (app) {
 
         /**
          * Returns a single card object by removing it from the global deck
-         * @returns {*}
+         * @returns {Object} card object with rank and suit property
          * @throws Error if there are no more cards left in the deck
          */
         TexasHoldemGame.prototype.dealCard = function () {
@@ -91,8 +91,8 @@ define(['app'], function (app) {
 
         /**
          * Returns an array of a given amount of cards
-         * @param numberOfCards Amount of cards for current hand
-         * @returns {Array}
+         * @param numberOfCards {Number} Amount of cards for current hand
+         * @returns {Array} List of cards
          */
         TexasHoldemGame.prototype.dealHand = function (numberOfCards) {
             var hand = [];
@@ -103,10 +103,12 @@ define(['app'], function (app) {
         };
 
         /**
-         * Sends all possible combinations of cards defined in hand to the callback in appropriate chunks of handSize
-         * @param hand      array of cards
-         * @param handSize  size of regular hand
-         * @param callback  for each combination run following function
+         * Sends all possible combinations of cards defined in hand to the callback in chunks of the number defined
+         * by handSize
+         * @see https://stackoverflow.com/questions/4061080/output-each-combination-of-an-array-of-numbers-with-javascript
+         * @param hand {Array}        aarray of cards
+         * @param handSize {Number}   size of regular hand
+         * @param callback {Function} for each combination run following function
          */
         TexasHoldemGame.prototype.combinations = function (hand, handSize, callback) {
             var n = hand.length;
@@ -132,39 +134,86 @@ define(['app'], function (app) {
          */
         TexasHoldemGame.prototype.rankDeck = function (deck) {
             var self = this,
-                combRank = [],
-                finalRank;
+                combRank = [];
             this.combinations(deck, 5, function (arr) {
                 combRank.push(self.rankHand(arr))
             });
-            finalRank = Math.max.apply(Math, combRank);
-            return this.ranks[finalRank];
+            // return the highest rank of all combinations
+            return combRank.reduce(function(prev, next) {
+                return prev.rank >= next.rank ? prev : next;
+            });
         };
 
         /**
-         * Calculates the rank of the given hand
-         * @param hand Array of Cards
-         * @returns {number}
+         * Calculates the rank of the given hand.
+         * @see http://www.codeproject.com/Articles/569271/A-Poker-hand-analyzer-in-JavaScript-using-bit-math
+         * @param hand {Array} list of Cards
+         * @returns {Object} rank object with rank integer, rank name and aceLow flag
          */
         TexasHoldemGame.prototype.rankHand = function (hand) {
-            var v = 0,
-                o = 0,
-                r = 0,
-                s = 0;
+            var handFloat = 0,
+                cardFloat = 0,
+                rankInt = 0,
+                suitInt = 0,
+                rankPattern,
+                handID,
+                isStraight,
+                isStraightAceLow,
+                isFlush,
+                isRoyalFlush,
+                rank,
+                rankObj;
 
-            hand.forEach(function (card) {
+            for(var card in hand) {
                 // combines all ranks into a binary representation
-                r |= 1 << card.r;
+                rankInt |= 1 << hand[card].r;
                 // combines all suits into a binary representation
-                s |= card.s;
-            });
-
-            for (var i = -1; i < 5; i++, o = Math.pow(2, (hand[i] ? hand[i].r : 0) * 4)) {
-                v += o * ((v / o & 15) + 1);
+                suitInt |= hand[card].s;
             }
-            v = v % 15 - ((r / (r & -r) == 31) || (r == 0x403c) ? 3 : 1);
-            v -= (this.SUITS.indexOf(s) ? 0 : 1) * ((r == 0x7c00) ? -5 : 1);
-            return v;
+
+            // normalizing the binary rank table, stripping all zero bits from the right off.
+            rankPattern = rankInt / (rankInt & -rankInt);
+            // with the shifted rankInt we have a unique pattern for certain types of hands, for example a straight
+            // requires five card ranks in a row, for example a straight starting with 10 would be 1111100000000 a
+            // straight starting with 2 would be binary 111110. By shifting the rankInt to the right,
+            // we get binary 11111 (int 31, hex 0x1f) for all types of straights
+            isStraight = rankPattern == 0x1f;
+            // except for a straight with a low ace the rankPattern would look like 1000000001111 so we check for
+            // that explicitly. (hex 0x100f = binary 1000000001111)
+            isStraightAceLow = rankPattern == 0x100f;
+
+            // if suitInt is equal to one of the different suit values in this.SUITS it means that all cards in
+            // this hand are off the same suit and therefore we have a flush
+            isFlush = this.SUITS.indexOf(suitInt) >= 0 ? 1 : 0;
+            // if the leftmost 5 bits of rankInt's 13 bit rank table are set, it's considered to be a
+            // royal flush (in combination of isFlush of curse)
+            isRoyalFlush = rankInt == 0x7c00;
+
+            for (var i = 0; i < hand.length; i++) {
+                // create a floating point number with the binary representation for that card rank
+                cardFloat = Math.pow(2, hand[i].r * 4);
+                // mathematically binary AND the card rank floating point number with the previous card rank
+                // when finishing the loop we will have a 52bit binary table with all card rank bits set, duplicate
+                // ranks are dropped.
+                handFloat += cardFloat * ((handFloat / cardFloat & 15) + 1);
+            }
+
+            // due to the structure of our handFloat binary table we get a unique number for each hand.
+            // Four of a Kind = 1
+            // High Card = 5
+            // One Pair = 6
+            // Two Pair = 7
+            // Three of a Kind = 9
+            // Full House = 10
+            handID = handFloat % 15;
+
+            rank = handID - (isStraight || isStraightAceLow ? 3 : 1);
+            rank += isFlush * (isRoyalFlush ? 5 : -1);
+
+            rankObj = this.ranks[rank];
+            rankObj.aceLow = isStraightAceLow;
+
+            return rankObj;
         };
 
         return TexasHoldemGame;
