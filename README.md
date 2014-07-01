@@ -1,12 +1,16 @@
 javascript.texasholdem
 ======================
 
-Requires Node.js, NPM and grunt-cli for the setup
+Requires Node.js, NPM and a globaly installed grunt-cli for the setup
+
+```shell
+    npm install grunt-cli -g
+```
 
 For setting up and running this project you need to type following command into your console:
 
 ```shell
-cd /path/to/javascript.texasholdem
-grunt build
-grunt serve
+    cd /path/to/javascript.texasholdem
+    grunt build
+    grunt serve
 ```
