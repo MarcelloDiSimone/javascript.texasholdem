@@ -41,7 +41,7 @@ define(['app'], function (app) {
             if (this.deck.length) {
                 return (this.deck.length) ? this.deck.splice(Math.floor(Math.random() * this.deck.length), 1)[0] : false;
             } else {
-                throw "Sorry no more cards available";
+                throw 'Sorry no more cards available';
             }
         };
 

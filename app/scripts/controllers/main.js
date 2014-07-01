@@ -1,3 +1,4 @@
+/*jslint bitwise: true */
 'use strict';
 
 define(['app', 'services/Player', 'services/Deck'], function (app) {
@@ -11,43 +12,43 @@ define(['app', 'services/Player', 'services/Deck'], function (app) {
              */
             $scope.ranks = [
                 {
-                    rankText: "Four of a Kind",
+                    rankText: 'Four of a Kind',
                     rank: 7
                 },
                 {
-                    rankText: "Straight Flush",
+                    rankText: 'Straight Flush',
                     rank: 8
                 },
                 {
-                    rankText: "Straight",
+                    rankText: 'Straight',
                     rank: 4
                 },
                 {
-                    rankText: "Flush",
+                    rankText: 'Flush',
                     rank: 5
                 },
                 {
-                    rankText: "High Card",
+                    rankText: 'High Card',
                     rank: 0
                 },
                 {
-                    rankText: "One Pair",
+                    rankText: 'One Pair',
                     rank: 1
                 },
                 {
-                    rankText: "Two Pair",
+                    rankText: 'Two Pair',
                     rank: 2
                 },
                 {
-                    rankText: "Royal Flush",
+                    rankText: 'Royal Flush',
                     rank: 9
                 },
                 {
-                    rankText: "Three of a Kind",
+                    rankText: 'Three of a Kind',
                     rank: 3
                 },
                 {
-                    rankText: "Full House",
+                    rankText: 'Full House',
                     rank: 6
                 }
             ];
@@ -78,7 +79,7 @@ define(['app', 'services/Player', 'services/Deck'], function (app) {
                 var n = hand.length;
                 var c = [];
                 var inner = function (start, choose_) {
-                    if (choose_ == 0) {
+                    if (choose_ === 0) {
                         callback(c);
                     } else {
                         for (var i = start; i <= n - choose_; ++i) {
@@ -99,7 +100,7 @@ define(['app', 'services/Player', 'services/Deck'], function (app) {
             $scope.rankDeck = function (deck) {
                 var combRank = [];
                 this.combinations(deck, 5, function (arr) {
-                    combRank.push($scope.rankHand(arr))
+                    combRank.push($scope.rankHand(arr));
                 });
                 // return the highest rank of all combinations
                 return combRank.reduce(function(prev, next) {
@@ -142,17 +143,17 @@ define(['app', 'services/Player', 'services/Deck'], function (app) {
                 // requires five card ranks in a row, for example a straight starting with 10 would be 1111100000000 a
                 // straight starting with 2 would be binary 111110. By shifting the rankInt to the right,
                 // we get binary 11111 (int 31, hex 0x1f) for all types of straights
-                isStraight = rankPattern == 0x1f;
+                isStraight = rankPattern === 0x1f;
                 // except for a straight with a low ace the rankPattern would look like 1000000001111 so we check for
                 // that explicitly. (hex 0x100f = binary 1000000001111)
-                isStraightAceLow = rankPattern == 0x100f;
+                isStraightAceLow = rankPattern === 0x100f;
 
                 // if suitInt is equal to one of the different suit values in this.SUITS it means that all cards in
                 // this hand are off the same suit and therefore we have a flush
                 isFlush = $scope.deck.SUITS.indexOf(suitInt) >= 0 ? 1 : 0;
                 // if the leftmost 5 bits of rankInt's 13 bit rank table are set, it's considered to be a
                 // royal flush (in combination of isFlush of curse)
-                isRoyalFlush = rankInt == 0x7c00;
+                isRoyalFlush = rankInt === 0x7c00;
 
                 for (var i = 0; i < hand.length; i++) {
                     // create a floating point number with the binary representation for that card rank
