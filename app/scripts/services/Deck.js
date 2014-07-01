@@ -12,15 +12,15 @@ define(['app'], function (app) {
              *      cross   = 4 = binary 0100
              *      spades  = 8 = binary 1000
              * This makes it possible to define the colors of a certain rank of cards by
-             * summing the 4 colors. Thus "Four of a kind" would add the color values:
+             * summing the 4 colors with "bitwise and". Thus "Four of a kind" would add the color values:
              *      (1 + 2 + 4 + 8) = 15 = binary 1111
              */
             this.SUITS = [1, 2, 4, 8];
 
-            /* now we create an initial deck of cards from which we're able to deal random cards */
+            // create an empty array for the deck of cards
             this.deck = [];
 
-            // Generating the deck of cards
+            // Filling the deck array with cards */
             for (var i = 2; i < this.SUIT_SIZE + 2; i++) {
                 for (var j = 0; j < this.SUITS.length; j++) {
                     this.deck.push({
@@ -41,7 +41,7 @@ define(['app'], function (app) {
             if (this.deck.length) {
                 return (this.deck.length) ? this.deck.splice(Math.floor(Math.random() * this.deck.length), 1)[0] : false;
             } else {
-                throw "Sorry no more cards on the deck";
+                throw "Sorry no more cards available";
             }
         };
 
@@ -57,7 +57,6 @@ define(['app'], function (app) {
             }
             return hand;
         };
-
 
         return Deck;
     });
